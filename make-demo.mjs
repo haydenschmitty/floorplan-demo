@@ -1,6 +1,7 @@
 // Turns a Floorplan map built for the web (build.mjs <root> --artifact, which leaves out local file
-// paths) into this demo page: a title and link preview, a "Live demo" badge, and an Ask message that
-// explains questions work in your own copy, since a public page can't run anyone's Claude.
+// paths) into map.html, the map half of this demo: a title and link preview, a "Live demo" badge, and
+// an Ask message that explains questions work in your own copy, since a public page can't run anyone's
+// Claude. index.html shows map.html beside a scripted chat; map.html also works on its own.
 // usage: node make-demo.mjs <path to floorplan/artifact.html>
 import fs from 'node:fs';
 
@@ -25,6 +26,8 @@ const meta = [
 ].join('\n');
 
 const demo = `<style>
+/* inside the chat page (index.html): the chat replaces Ask, and the chat page handles phones */
+.embedded #ask, .embedded #demo-small { display: none !important; }
 .demo-badge { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--text); background: rgba(74, 222, 128, .14); text-decoration: none; white-space: nowrap; }
 .demo-badge i { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
 .demo-badge:hover { background: rgba(74, 222, 128, .24); }
@@ -52,6 +55,7 @@ const demo = `<style>
 </div></div>
 <script>
 (() => {
+  if (window.top !== window.self) document.documentElement.classList.add("embedded");
   const REPO = ${JSON.stringify(REPO)};
   document.title = ${JSON.stringify(TITLE)}; // the map names the tab after the project on load
   // a badge beside the project name
@@ -80,5 +84,5 @@ const demo = `<style>
 html = html
   .replace(/<title>[^<]*<\/title>/, `<title>${esc(TITLE)}</title>\n${meta}`)
   .replace(/<\/body>(?![\s\S]*<\/body>)/, `${demo}\n</body>`);
-fs.writeFileSync(new URL('./index.html', import.meta.url), html);
-console.log(`✓ wrote index.html (${Math.round(html.length / 1024)} KB)`);
+fs.writeFileSync(new URL('./map.html', import.meta.url), html);
+console.log(`✓ wrote map.html (${Math.round(html.length / 1024)} KB)`);
