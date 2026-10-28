@@ -53,6 +53,7 @@ const demo = `<style>
 <script>
 (() => {
   const REPO = ${JSON.stringify(REPO)};
+  document.title = ${JSON.stringify(TITLE)}; // the map names the tab after the project on load
   // a badge beside the project name
   const hl = document.querySelector('header .hl');
   if (hl) {

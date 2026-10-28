@@ -9835,6 +9835,7 @@ fontsReady.then(() => render({ after: () => { renderPanel(); emit('ready', {}); 
 <script>
 (() => {
   const REPO = "https://github.com/haydenschmitty/floorplan";
+  document.title = "Floorplan live demo: Brewline"; // the map names the tab after the project on load
   // a badge beside the project name
   const hl = document.querySelector('header .hl');
   if (hl) {
