@@ -2,6 +2,7 @@
 // paths) into map.html, the map half of this demo: a title and link preview, a "Live demo" badge, and
 // an Ask message that explains questions work in your own copy, since a public page can't run anyone's
 // Claude. index.html shows map.html beside a scripted chat; map.html also works on its own.
+// map.html?agent=codex shows it as made in Codex.
 // usage: node make-demo.mjs <path to floorplan/artifact.html>
 import fs from 'node:fs';
 
@@ -80,6 +81,14 @@ const demo = `<style>
   fix();
 })();
 </script>`;
+
+// map.html?agent=codex shows the map as Codex made it (Ask bar, "Fix with Codex"), for the chat page's
+// Claude Code / Codex switch. It has to run before the viewer reads the graph.
+const agentSwitch = `<script>try { if (new URLSearchParams(location.search).get('agent') === 'codex') window.FLOORPLAN.meta.agent = 'codex'; } catch {}</script>`;
+const dataAt = html.indexOf('window.FLOORPLAN = ');
+const dataEnd = html.indexOf('</script>', dataAt) + '</script>'.length;
+if (dataAt < 0) { console.error('✗ No map data found. Is this a Floorplan map?'); process.exit(1); }
+html = html.slice(0, dataEnd) + '\n' + agentSwitch + html.slice(dataEnd);
 
 html = html
   .replace(/<title>[^<]*<\/title>/, `<title>${esc(TITLE)}</title>\n${meta}`)

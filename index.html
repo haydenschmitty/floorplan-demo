@@ -4,16 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Floorplan live demo: Brewline</title>
-<meta name="description" content="See Floorplan in action: ask Claude Code for a map of your app and get an interactive, plain-English floorplan. This one maps Brewline, a sample coffee-shop app.">
+<meta name="description" content="See Floorplan in action: ask Claude Code or Codex for a map of your app and get an interactive, plain-English floorplan. This one maps Brewline, a sample coffee-shop app.">
 <meta property="og:title" content="Floorplan live demo: Brewline">
-<meta property="og:description" content="See Floorplan in action: ask Claude Code for a map of your app and get an interactive, plain-English floorplan. This one maps Brewline, a sample coffee-shop app.">
+<meta property="og:description" content="See Floorplan in action: ask Claude Code or Codex for a map of your app and get an interactive, plain-English floorplan. This one maps Brewline, a sample coffee-shop app.">
 <meta property="og:image" content="https://raw.githubusercontent.com/haydenschmitty/floorplan/main/docs/images/overview.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <!--
-  Floorplan live demo. Left: a scripted illustration of asking for a floorplan in Claude Code (not a
-  real session, and not Anthropic's app). Right: the real Brewline map (map.html), which the chat
-  drives through the map's own window.Floorplan API. Nothing here leaves this site.
+  Floorplan live demo. Left: a scripted illustration of asking for a floorplan in Claude Code or Codex
+  (switch at the top; not a real session, and not Anthropic's or OpenAI's app). Right: the real Brewline
+  map (map.html, or map.html?agent=codex as Codex made it), which the chat drives through the map's own
+  window.Floorplan API. ?in=codex opens the Codex version. Nothing here leaves this site.
 -->
 <style>
 :root {
@@ -29,6 +30,13 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
 a { color: inherit; }
 
 /* ---------- chat pane ---------- */
+.mode { display: flex; align-items: center; gap: 10px; padding: 12px 16px 0; font-size: 12px; color: var(--text-3); }
+.seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: var(--raise); }
+.seg button { border: 0; background: transparent; color: var(--text-2); font: inherit; font-size: 12.5px; font-weight: 500; padding: 5px 12px; border-radius: 999px; cursor: pointer; transition: background .15s, color .15s; }
+.seg button:hover { color: var(--text); }
+.seg button[aria-checked="true"] { background: var(--raise-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--hair); }
+.seg button[aria-checked="true"]::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 7px; vertical-align: 1px; }
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 #chat { position: fixed; inset: 0 auto 0 0; width: var(--chat-w); display: flex; flex-direction: column; background: var(--pane); border-right: 1px solid var(--hair); }
 .ch { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--hair); }
 .ch .who { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -107,16 +115,22 @@ a { color: inherit; }
 </head>
 <body>
 <aside id="chat" aria-label="Illustration of asking Claude Code for a floorplan">
+  <div class="mode"><span id="mode-label">See it in</span>
+    <div class="seg" role="radiogroup" aria-labelledby="mode-label">
+      <button type="button" role="radio" data-mode="claude" aria-checked="true">Claude Code</button>
+      <button type="button" role="radio" data-mode="codex" aria-checked="false">Codex</button>
+    </div>
+  </div>
   <div class="ch">
-    <div class="who"><b>Claude Code <span class="tag">Illustration</span></b><span class="sub">~/brewline</span></div>
+    <div class="who"><b><span id="agent">Claude Code</span> <span class="tag">Illustration</span></b><span class="sub">~/brewline</span></div>
     <button type="button" id="replay" title="Play the conversation again">Replay</button>
   </div>
   <div id="log" aria-live="polite"></div>
   <div id="chips"></div>
   <div class="cf">
     <div class="input"><span>Ask about your own app in your copy of Floorplan</span></div>
-    <a class="cta" href="https://github.com/haydenschmitty/floorplan#install" target="_blank" rel="noopener">Get Floorplan for your app →</a>
-    <p class="note">A scripted illustration of using Floorplan in Claude Code. The map on the right is real: click around, zoom in, open Health, Screens and Flows.</p>
+    <a class="cta" id="cta" href="https://github.com/haydenschmitty/floorplan#claude-code" target="_blank" rel="noopener">Get Floorplan for Claude Code →</a>
+    <p class="note">A scripted illustration of using Floorplan in <span id="agent-note">Claude Code</span>. The map on the right is real: click around, zoom in, open Health, Screens and Flows.</p>
   </div>
 </aside>
 <main id="stage">
@@ -125,7 +139,7 @@ a { color: inherit; }
 </main>
 <div id="small"><div class="box">
   <h1>Floorplan live demo</h1>
-  <p>An interactive map of a sample coffee-shop app, drawn in Claude Code. It's made for a computer screen, so open this link on your laptop to see it properly.</p>
+  <p>An interactive map of a sample coffee-shop app, drawn by Floorplan in Claude Code or Codex. It's made for a computer screen, so open this link on your laptop to see it properly.</p>
   <a href="https://github.com/haydenschmitty/floorplan" target="_blank" rel="noopener">See Floorplan on GitHub</a>
   <button type="button" onclick="document.getElementById('small').hidden = true">Show the map anyway</button>
 </div></div>
@@ -140,12 +154,45 @@ a { color: inherit; }
   const revealMap = () => { building.classList.add('gone'); setTimeout(() => { if (building.classList.contains('gone')) building.hidden = true; }, 700); };
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const wait = (ms) => new Promise((r) => setTimeout(r, calm ? Math.min(ms, 120) : ms));
-  let run = 0; // bumps on Replay, so an old run stops where it is
+  let run = 0; // bumps on Replay or a switch, so an old run stops where it is
+
+  // ---------- Claude Code or Codex ----------
+  const MODES = {
+    claude: { name: 'Claude Code', short: 'Claude', accent: '#d9a27a', prompt: 'make me a floorplan of my app',
+      install: 'https://github.com/haydenschmitty/floorplan#claude-code' },
+    codex: { name: 'Codex', short: 'Codex', accent: '#8ab4f8', prompt: '$floorplan make me a floorplan of my app',
+      install: 'https://github.com/haydenschmitty/floorplan/blob/main/docs/codex.md#install' },
+  };
+  let mode = new URLSearchParams(location.search).get('in') === 'codex' ? 'codex' : 'claude';
+  const M = () => MODES[mode];
+  function applyMode() {
+    const m = M();
+    document.documentElement.style.setProperty('--accent', m.accent);
+    document.getElementById('agent').textContent = m.name;
+    document.getElementById('agent-note').textContent = m.name;
+    document.getElementById('chat').setAttribute('aria-label', `Illustration of asking ${m.name} for a floorplan`);
+    const cta = document.getElementById('cta');
+    cta.href = m.install; cta.textContent = `Get Floorplan for ${m.name} →`;
+    for (const b of document.querySelectorAll('.seg button')) b.setAttribute('aria-checked', String(b.dataset.mode === mode));
+    // the map as this agent made it: its Health says "Fix with Codex" and so on
+    const src = `map.html${mode === 'codex' ? '?agent=codex' : ''}#v=root`;
+    if (!frame.getAttribute('src').startsWith(src.split('#')[0] + '#')) frame.src = src;
+  }
+  function setMode(next) {
+    if (next === mode || !MODES[next]) return;
+    mode = next;
+    const u = new URL(location.href);
+    if (mode === 'codex') u.searchParams.set('in', 'codex'); else u.searchParams.delete('in');
+    history.replaceState(null, '', u);
+    applyMode();
+    busy = false; play();
+  }
 
   // ---------- the map (map.html), driven through its own API ----------
   const F = () => frame.contentWindow?.Floorplan;
   const mapReady = () => new Promise((resolve) => {
-    const check = () => (F()?.state?.layout ? resolve() : setTimeout(check, 150));
+    // after a switch the old map can still be loaded for a moment, so wait for the right one
+    const check = () => (F()?.state?.layout && (F().agent?.id || 'claude') === mode ? resolve() : setTimeout(check, 150));
     check();
   });
   function resetMap() {
@@ -174,7 +221,7 @@ a { color: inherit; }
   }
   const add = (cls, html) => { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; log.appendChild(d); log.scrollTop = log.scrollHeight; return d; };
   const user = (text) => add('msg user', esc(text));
-  async function claude(text, id) {
+  async function reply(text, id) {
     const t = add('msg typing', '<i></i><i></i><i></i>');
     await wait(700 + Math.min(text.length * 3, 900));
     if (id !== run) return t.remove();
@@ -197,19 +244,20 @@ a { color: inherit; }
   }
 
   // ---------- the script ----------
-  const REPORT = [
+  const report = () => [
     "Here's your floorplan of **Brewline**. It has four main parts:",
     '- **Online shop**: where customers buy coffee, subscribe and send gifts\n- **Staff app**: packing orders, shipping labels and refunds\n- **Main server**: keeps orders, stock and subscriptions in step\n- **Background jobs**: renew subscriptions each morning and plan the week\'s roasts',
     'It relies on **Stripe** for payments, **Shippo** for shipping labels and **SendGrid** for emails.',
     '**2 things need attention:** a secret key is written into `config.ts`, and anyone could trigger subscription renewals. Both are in **Health**.',
     "The **gift subscriptions** feature we just built is highlighted in green. Ask me anything about how it all works.",
   ].join('\n\n');
+  const fixWith = () => `Fix with ${M().short}`;
 
   const QUESTIONS = [
     { q: 'Walk me through buying a bag of coffee', act: 'buy', note: 'Playing "Buying a bag of coffee" on the map',
       a: "Here's the path from cart to receipt, step by step:\n\n- The **cart** and **checkout** pages send the order to the **main server**\n- The server holds the stock and starts a **Stripe** checkout\n- When Stripe confirms the payment, the server records the order and **SendGrid** emails the receipt\n\nUse the arrows in the bar at the top of the map to move through the steps." },
     { q: 'What needs fixing?', act: 'health', note: 'Opened Health on the map',
-      a: 'Two things are worth fixing first:\n\n- **A secret key is written into `config.ts`.** Anyone who can see the code can use it. Move it into an environment variable and replace the key.\n- **Anyone could trigger renewals.** The address the morning job calls has no login check, so anyone who finds it could run renewals.\n\nEach item has **Show on map**, and **Fix with Claude**, which gives you a ready-made request to paste back here.' },
+      a: 'Two things are worth fixing first:\n\n- **A secret key is written into `config.ts`.** Anyone who can see the code can use it. Move it into an environment variable and replace the key.\n- **Anyone could trigger renewals.** The address the morning job calls has no login check, so anyone who finds it could run renewals.\n\nEach item has **Show on map**, and **FIX_WITH**, which gives you a ready-made request to paste back here.' },
     { q: 'How do gift subscriptions work?', act: 'gift', note: 'Playing "Sending a gift subscription" on the map',
       a: 'On the **Gift page**, the buyer picks a coffee, how many months and who it\'s for. The **main server** charges them up front, makes a one-time **gift code**, and **SendGrid** emails it to their friend.\n\nThe friend enters the code on the **Redeem a gift** page, which starts their subscription.' },
     { q: 'What did we just change?', act: 'recent', note: 'Showing Recent work on the map',
@@ -241,7 +289,7 @@ a { color: inherit; }
     chips.remove();
     asked.add(item.q);
     user(item.q);
-    await claude(item.a, id);
+    await reply(item.a.replace('FIX_WITH', fixWith()), id);
     if (id !== run) return;
     await mapReady();
     resetMap();
@@ -258,8 +306,8 @@ a { color: inherit; }
     building.hidden = false; building.classList.remove('gone');
     if (F()) resetMap();
     await wait(500);
-    user('make me a floorplan of my app');
-    await claude("I'll map **Brewline** so you can see how everything fits together.", id);
+    user(M().prompt);
+    await reply("I'll map **Brewline** so you can see how everything fits together.", id);
     if (id !== run) return;
     await steps([
       ['Scanned 4 repos', '59 files, 22 endpoints'],
@@ -267,16 +315,20 @@ a { color: inherit; }
       ['Sorted it into 9 parts and 3 guided flows'],
       ['Described every file and endpoint in plain English'],
       ['Ran the Health check', '2 important'],
-      ['Built the map and opened it', '', async () => { await mapReady(); revealMap(); }],
+      ...(mode === 'codex'
+        ? [['Built the map'], ['Started the map server and opened it', 'allowed outside the sandbox', async () => { await mapReady(); revealMap(); }]]
+        : [['Built the map and opened it', '', async () => { await mapReady(); revealMap(); }]]),
     ], id);
     if (id !== run) return;
-    await claude(REPORT, id);
+    await reply(report(), id);
     if (id !== run) return;
     busy = false;
     showChips();
   }
 
   document.getElementById('replay').onclick = () => { busy = false; play(); };
+  for (const b of document.querySelectorAll('.seg button')) b.onclick = () => setMode(b.dataset.mode);
+  applyMode();
   // phones get the "best on a computer" screen and the map alone, so skip the script there
   if (matchMedia('(max-width: 760px)').matches) mapReady().then(revealMap);
   else play();
