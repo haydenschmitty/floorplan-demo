@@ -25,3 +25,19 @@ node make-demo.mjs path/to/floorplan/artifact.html
 ```
 
 Brewline is made up for the demo: there's no real code, customer or data behind it.
+
+## Maps gallery
+
+[`/maps/`](https://haydenschmitty.github.io/floorplan-demo/maps/) shows Floorplan maps of popular open source codebases. Each map is an exported copy (`node floorplan/serve.mjs --export`), so it has no Ask bar, local paths or git remotes, and the gallery refuses maps that include Health or recent work: it never publishes another project's weak spots.
+
+To add one, map the project with Floorplan, export it, then:
+
+```bash
+node add-map.mjs path/to/<project>-map.html owner/repo
+```
+
+That writes `maps/<owner>/<repo>/index.html`, adds it to `maps/maps.json`, and prints a badge maintainers can put in their README:
+
+[![Floorplan: explore the map](https://haydenschmitty.github.io/floorplan-demo/badge.svg)](https://haydenschmitty.github.io/floorplan-demo/maps/)
+
+`badge.svg` is that badge, made to sit beside shields.io badges.
