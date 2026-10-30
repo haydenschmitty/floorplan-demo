@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Floorplan maps</title>
+<meta name="description" content="Interactive, plain-English maps of popular open source codebases, drawn by Floorplan. See how they actually work.">
+<meta property="og:title" content="Floorplan maps: how popular codebases actually work">
+<meta property="og:description" content="Interactive, plain-English maps of popular open source codebases, drawn by Floorplan.">
+<meta property="og:image" content="https://raw.githubusercontent.com/haydenschmitty/floorplan/main/docs/images/overview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root { --bg: #0f0f0f; --card: #171717; --card-2: #1d1d1d; --hair: rgba(255, 255, 255, .07); --text: #ececec; --text-2: #b4b4b4; --text-3: #8b8b8b; --accent: #6f7bf7; --ok: #4ade80; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+header { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; text-decoration: none; }
+.brand img { height: 20px; }
+.nav { display: flex; gap: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; font-size: 14px; font-weight: 500; text-decoration: none; background: rgba(255, 255, 255, .07); border: 0; color: var(--text); cursor: pointer; font-family: inherit; white-space: nowrap; }
+.btn:hover { background: rgba(255, 255, 255, .12); }
+.btn.primary { background: var(--text); color: var(--bg); }
+.btn.primary:hover { background: #fff; }
+.hero { padding: 64px 0 40px; max-width: 720px; }
+.hero h1 { font-size: clamp(34px, 5vw, 52px); line-height: 1.08; letter-spacing: -.035em; margin: 0 0 16px; }
+.hero p { color: var(--text-2); font-size: 18px; margin: 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; padding-bottom: 40px; }
+.card { background: var(--card); border: 1px solid var(--hair); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.card .repo { font: 13px 'JetBrains Mono', monospace; color: var(--text-3); text-decoration: none; }
+.card .repo:hover { color: var(--text); }
+.card h2 { font-size: 20px; letter-spacing: -.02em; margin: 0; }
+.card .sum { color: var(--text-2); font-size: 14px; margin: 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.stats { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat { font-size: 12.5px; color: var(--text-2); background: var(--card-2); border-radius: 999px; padding: 4px 10px; }
+.uses { font-size: 12.5px; color: var(--text-3); }
+.card .foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 4px; }
+.card .when { font-size: 12px; color: var(--text-3); }
+details.badge { border-top: 1px solid var(--hair); padding-top: 10px; font-size: 13px; color: var(--text-3); }
+details.badge summary { cursor: pointer; }
+details.badge summary:hover { color: var(--text); }
+details.badge p { margin: 10px 0 8px; }
+details.badge code { display: block; font: 11.5px/1.5 'JetBrains Mono', monospace; color: var(--text-2); background: var(--card-2); border-radius: 10px; padding: 10px 12px; word-break: break-all; }
+details.badge .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; }
+.empty { grid-column: 1 / -1; background: var(--card); border: 1px dashed var(--hair); border-radius: 18px; padding: 40px; text-align: center; color: var(--text-2); }
+.cta { margin: 24px 0 64px; background: var(--card); border: 1px solid var(--hair); border-radius: 22px; padding: 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.cta h3 { margin: 0 0 6px; font-size: 22px; letter-spacing: -.02em; }
+.cta p { margin: 0; color: var(--text-2); }
+.cta .nav { flex-wrap: wrap; }
+footer { color: var(--text-3); font-size: 13px; padding: 0 0 40px; }
+@media (max-width: 600px) { .nav .hide-s { display: none; } .hero { padding-top: 32px; } .cta { padding: 24px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="https://github.com/haydenschmitty/floorplan"><img src="logo.png" alt="">Floorplan</a>
+    <nav class="nav">
+      <a class="btn hide-s" href="../">Live demo</a>
+      <a class="btn primary" href="https://github.com/haydenschmitty/floorplan">Get Floorplan</a>
+    </nav>
+  </header>
+  <section class="hero">
+    <h1>How do popular codebases actually work?</h1>
+    <p>Interactive, plain-English maps of open source projects, drawn by Floorplan. Every part, file and endpoint gets a name and a one-line description, with lines showing what uses what. Click one and look around.</p>
+  </section>
+  <main class="grid" id="grid"></main>
+  <section class="cta">
+    <div>
+      <h3>Want a map of your own app?</h3>
+      <p>Floorplan is free and open source, and runs in Claude Code or Codex on the plan you already have.</p>
+    </div>
+    <div class="nav">
+      <a class="btn" id="request" href="#">Request a map</a>
+      <a class="btn primary" href="https://github.com/haydenschmitty/floorplan#install">Install Floorplan</a>
+    </div>
+  </section>
+  <footer>Maps are drawn from each project's public code and may miss things. Maintainers: if a map gets your project wrong or you'd like it removed, <a href="https://github.com/haydenschmitty/floorplan/issues/new?title=Gallery%3A%20">open an issue</a>.</footer>
+</div>
+<script>
+(() => {
+  const SITE = 'https://haydenschmitty.github.io/floorplan-demo';
+  const h = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const plural = (n, w) => `${n.toLocaleString()} ${w}${n === 1 ? '' : 's'}`;
+  document.getElementById('request').href = 'https://github.com/haydenschmitty/floorplan/issues/new?title=' + encodeURIComponent('Map request: owner/repo') + '&body=' + encodeURIComponent('Which public repo should be mapped next, and why?\n\n');
+  const grid = document.getElementById('grid');
+  fetch('maps.json', { cache: 'no-store' }).then((r) => r.ok ? r.json() : []).catch(() => []).then((maps) => {
+    if (!maps.length) { grid.innerHTML = '<div class="empty">The first maps are on their way.</div>'; return; }
+    grid.innerHTML = maps.map((m) => {
+      const badge = `[![Floorplan: explore the map](${SITE}/badge.svg)](${SITE}/maps/${m.repo}/)`;
+      const when = new Date(m.mappedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+      return `<article class="card">
+        <a class="repo" href="https://github.com/${h(m.repo)}" target="_blank" rel="noopener">github.com/${h(m.repo)}</a>
+        <h2>${h(m.name)}</h2>
+        <p class="sum">${h(m.summary)}</p>
+        <div class="stats"><span class="stat">${plural(m.parts, 'part')}</span><span class="stat">${plural(m.files, 'file')}</span><span class="stat">${plural(m.endpoints, 'endpoint')}</span></div>
+        ${m.uses?.length ? `<div class="uses">Uses ${h(m.uses.join(', '))}</div>` : ''}
+        <div class="foot"><span class="when">Mapped ${h(when)}${m.commit ? ` at ${h(m.commit)}` : ''}</span><a class="btn primary" href="${h(m.repo)}/">Explore the map</a></div>
+        <details class="badge"><summary>Maintainer? Add the badge to your README</summary>
+          <p>Lets people explore your codebase before they dive in.</p>
+          <code>${h(badge)}</code>
+          <div class="row"><img src="../badge.svg" alt="Floorplan: explore the map" height="20"><button class="btn" data-copy="${h(badge)}">Copy</button></div>
+        </details>
+      </article>`;
+    }).join('');
+    grid.querySelectorAll('[data-copy]').forEach((b) => b.onclick = () => navigator.clipboard?.writeText(b.dataset.copy).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1500); }));
+  });
+})();
+</script>
+</body>
+</html>
