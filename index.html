@@ -79,6 +79,9 @@ a { color: inherit; }
 .input span { flex: 1; }
 .cta { display: inline-flex; align-items: center; justify-content: center; margin-top: 10px; width: 100%; padding: 10px 14px; border-radius: 12px; background: var(--text); color: var(--bg); font-weight: 600; font-size: 13.5px; text-decoration: none; }
 .cta:hover { background: #fff; }
+.star { display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; width: 100%; padding: 9px 14px; border-radius: 12px; background: var(--raise); color: var(--text); font-weight: 500; font-size: 13.5px; text-decoration: none; box-shadow: inset 0 0 0 1px var(--hair); }
+.star:hover { background: var(--raise-2); }
+.star svg { width: 15px; height: 15px; fill: #e3b341; flex: none; }
 .note { margin: 9px 2px 0; font-size: 11.5px; line-height: 1.5; color: var(--text-4); }
 
 /* ---------- map ---------- */
@@ -108,8 +111,8 @@ a { color: inherit; }
   #small h1 { font-size: 22px; margin: 0 0 10px; }
   #small p { color: var(--text-2); font-size: 15px; line-height: 1.55; margin: 0 0 22px; }
   #small a, #small button { display: block; width: 100%; padding: 13px 16px; border-radius: 14px; font: inherit; font-size: 15px; font-weight: 500; text-decoration: none; margin-bottom: 10px; border: 0; cursor: pointer; }
-  #small a { background: var(--text); color: var(--bg); }
-  #small button { background: rgba(255, 255, 255, .08); color: var(--text); }
+  #small .go { background: var(--text); color: var(--bg); }
+  #small a { background: rgba(255, 255, 255, .08); color: var(--text); }
 }
 </style>
 </head>
@@ -130,6 +133,7 @@ a { color: inherit; }
   <div class="cf">
     <div class="input"><span>Ask about your own app in your copy of Floorplan</span></div>
     <a class="cta" id="cta" href="https://github.com/haydenschmitty/floorplan#claude-code" target="_blank" rel="noopener">Get Floorplan for Claude Code →</a>
+    <a class="star" href="https://github.com/haydenschmitty/floorplan" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg>Star Floorplan on GitHub</a>
     <p class="note">A scripted illustration of using Floorplan in <span id="agent-note">Claude Code</span>. The map on the right is real: click around, zoom in, open Health, Screens and Flows.</p>
   </div>
 </aside>
@@ -139,9 +143,9 @@ a { color: inherit; }
 </main>
 <div id="small"><div class="box">
   <h1>Floorplan live demo</h1>
-  <p>An interactive map of a sample coffee-shop app, drawn by Floorplan in Claude Code or Codex. It's made for a computer screen, so open this link on your laptop to see it properly.</p>
-  <a href="https://github.com/haydenschmitty/floorplan" target="_blank" rel="noopener">See Floorplan on GitHub</a>
-  <button type="button" onclick="document.getElementById('small').hidden = true">Show the map anyway</button>
+  <p>An interactive map of a sample coffee-shop app, drawn by Floorplan in Claude Code or Codex. Drag and pinch to move around, and tap a box to see what it does. On a laptop you also get the guided conversation beside it.</p>
+  <button type="button" class="go" onclick="document.getElementById('small').hidden = true">Explore the map</button>
+  <a href="https://github.com/haydenschmitty/floorplan" target="_blank" rel="noopener">★ Star Floorplan on GitHub</a>
 </div></div>
 <script>
 (() => {

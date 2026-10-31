@@ -6,7 +6,7 @@ See [Floorplan](https://github.com/haydenschmitty/floorplan) in action. Floorpla
 
 On the left, a scripted illustration of asking for a floorplan of Brewline, a sample coffee-shop app. Switch between **Claude Code** and **Codex** at the top (or open [the Codex version](https://haydenschmitty.github.io/floorplan-demo/?in=codex) directly). On the right, the real map it produces. Pick a follow-up question and the map shows the answer: a guided flow, the Health check, recent work or the tour. You can also click around the map directly.
 
-The conversation is written ahead of time; in your own copy, you ask anything and Claude answers from your actual code. Best viewed on a computer.
+The conversation is written ahead of time; in your own copy, you ask anything and Claude answers from your actual code. On a phone you get the map on its own (drag, pinch and tap a box); on a computer, the conversation beside it.
 
 ## Get Floorplan for your app
 

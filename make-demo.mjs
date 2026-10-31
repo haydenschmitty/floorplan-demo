@@ -27,33 +27,15 @@ const meta = [
 ].join('\n');
 
 const demo = `<style>
-/* inside the chat page (index.html): the chat replaces Ask, and the chat page handles phones */
-.embedded #ask, .embedded #demo-small { display: none !important; }
+/* inside the chat page (index.html): the chat replaces Ask. The map has its own phone layout (Floorplan 0.5.0 and later). */
+.embedded #ask { display: none !important; }
 .demo-badge { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--text); background: rgba(74, 222, 128, .14); text-decoration: none; white-space: nowrap; }
 .demo-badge i { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
 .demo-badge:hover { background: rgba(74, 222, 128, .24); }
 #ask-warn.demo a { color: var(--text); font-weight: 500; }
 @media (max-width: 1100px) { .demo-badge span { display: none; } }
 @media (max-width: 760px) { .demo-badge { display: none; } }
-/* phones: the map is made for bigger screens, so say so before it opens */
-#demo-small { display: none; }
-@media (max-width: 760px) {
-  #demo-small { display: flex; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; padding: 24px; background: var(--bg); font-family: var(--sans); }
-  #demo-small[hidden] { display: none; }
-  #demo-small .box { max-width: 340px; text-align: center; color: var(--text); }
-  #demo-small h1 { font-size: 22px; margin: 0 0 10px; }
-  #demo-small p { color: var(--text-2); font-size: 15px; line-height: 1.55; margin: 0 0 22px; }
-  #demo-small a, #demo-small button { display: block; width: 100%; box-sizing: border-box; padding: 13px 16px; border-radius: 14px; font-size: 15px; font-weight: 500; text-decoration: none; margin-bottom: 10px; border: 0; cursor: pointer; font-family: inherit; }
-  #demo-small a { background: var(--text); color: var(--bg); }
-  #demo-small button { background: rgba(255, 255, 255, .08); color: var(--text); }
-}
 </style>
-<div id="demo-small"><div class="box">
-  <h1>Floorplan live demo</h1>
-  <p>An interactive map of a sample coffee-shop app. It's made for a computer screen, so open this link on your laptop to explore it properly.</p>
-  <a href="${REPO}" target="_blank" rel="noopener">See Floorplan on GitHub</a>
-  <button type="button" onclick="this.closest('#demo-small').hidden = true">Continue anyway</button>
-</div></div>
 <script>
 (() => {
   if (window.top !== window.self) document.documentElement.classList.add("embedded");
